@@ -1,0 +1,14 @@
+\paragraph{SIFT1M results.} On this real benchmark the fixes cost nothing. The recipe reaches
+$\ratioSIFTRecipe\times$ the loss of Lloyd-25 in $\passSIFTRecipe$ passes, and e-means+ reaches
+$\ratioSIFTPlus\times$ in $\passSIFTPlus$. The check fell back in none of the $\seedsSIFT$ seeds, and
+$\tau=1$ changes the loss by less than $0.01\%$. Because every method here runs in the same NumPy
+code on the same machine (a MacBook Pro CPU), we also give wall-clock times: e-means+
+took $\timeSIFTPlus$\,s against $\timeSIFTLloyd$\,s for Lloyd-25. These are not comparable to the
+GPU timings of~\cite{bessa2026}. One-probe Recall@10 is $\recOneSIFTPlus$ for e-means+ and
+$\recOneSIFTLloyd$ for Lloyd-25, and every variant lies within 1.5 points. Lloyd run for 300
+iterations lowers the loss by about $0.4\%$ ($\ratioSIFTLloydConv\times$) at $\passSIFTLloydConv$
+passes, and the polished variants match it ($\tau$ + S: $\ratioSIFTPlusS\times$). These runs
+hit the 300-iteration cap without converging ($\convSIFTLloydConv$ of $\seedsSIFT$ Lloyd runs and
+$\convSIFTPlusS$ of $\seedsSIFT$ $\tau$ + S runs converged), so S does not deliver a fixed point at
+this scale within our cap. G adds nothing here ($\ratioSIFTGuard\times$ against $\ratioSIFTPlusS\times$
+for $\tau$ + S). The guard's gain on the heavy-tailed synthetic set does not carry over to SIFT1M.

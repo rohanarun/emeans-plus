@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Heavy-tailed ANN ($n=50{,}000$, $d=128$, $k=256$, $\seedsANN$ seeds): loss relative to
+Lloyd-25, IVF-Flat Recall@10 at 1, 4 and 16 probes (mean, with s.d.\ for one probe), and data
+passes.}\label{tab:ann}
+\begin{tabular}{lrrrrr}
+\toprule
+Variant & loss ratio & R@10, 1 probe & 4 probes & 16 probes & passes\\
+\midrule
+\rows{generated/tab_ann.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Heavy-tailed ANN.} Table~\ref{tab:ann}. Here mass revival is costly: the recipe ends at
+$\ratioANNRecipe\times$ Lloyd's loss, and polishing does not repair it, because the polished
+result sits in a poor Lloyd optimum. The recipe + C falls back in $\fbANNRecipeC$ of the
+$\seedsANN$ seeds, and $\tau$ + S in $\fbANNPlusS$, ending far above Lloyd in the others.
+e-means+ falls back in all $\seedsANN$ seeds, so it returns Lloyd's result (run to convergence)
+at $\passANNPlus$ passes against $\passANNLloyd$ for Lloyd-25. Its value here is the guarantee
+alone. The cost-guarded variants do best: $\tau$ + G + S reaches $\ratioANNGuard\times$ Lloyd's
+loss, beating Lloyd-25 on every seed. It also beats the best of three Lloyd runs
+($\ratioANNLloydThree$) at a similar budget ($\passANNGuard$ against $\passANNLloydThree$ passes),
+and raises one-probe Recall@10 from $\recOneANNLloyd$ to $\recOneANNGuard$. Of its accepted swaps,
+$\swapsDownANNGuard$ of $\swapsANNGuard$ lowered the full-data loss. With 256 modes of very
+unequal weight, a $D^2$-sampled swap that moves a centre from a crowded mode to an uncovered tail
+mode is usually a real improvement. Lloyd cannot make that move.

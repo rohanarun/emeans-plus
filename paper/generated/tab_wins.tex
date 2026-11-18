@@ -1,0 +1,13 @@
+\begin{tabular}{lcccccc}
+\toprule
+Variant & Rare tail & Rare tail, $B{=}32$ & Digits, $k{=}10$ & Digits, $k{=}64$ & Heavy-tailed ANN & SIFT1M \\
+\midrule
+e-means (recipe) & 0/10/0 & 0/10/0 & 0/8/0 & 9/0/0 & 0/5/0 & 0/0/0 \\
+e-means + C & 0/0/10 & 0/0/10 & 0/8/0 & 9/0/0 & 0/1/4 & 0/0/0 \\
+\textbf{e-means+} ($\tau$ + C) & 0/0/10 & 0/0/10 & 2/6/0 & 2/6/0 & 0/0/5 & 0/0/0 \\
+e-means + S & 0/0/10 & 0/0/10 & 0/7/0 & 10/0/0 & 0/2/3 & -- \\
+$\tau$ + S & 0/0/10 & 0/0/10 & 2/5/0 & 9/0/0 & 0/2/3 & 3/0/0 \\
+Guard + S & 0/0/8 & 0/0/10 & 0/8/0 & 8/1/0 & 5/0/0 & -- \\
+$\tau$ + guard + S & 1/0/7 & 1/0/6 & 2/5/0 & 4/4/0 & 5/0/0 & 3/0/0 \\
+\bottomrule
+\end{tabular}

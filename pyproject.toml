@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "emeans-plus"
+version = "0.2.0"
+description = "Stabilizing Exponential Moving Average k-Means: Repairing Two Counterexamples"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    {name = "Rohan Arun", email = "rohan@getsupers.com"}
+]
+dependencies = [
+    "scikit-learn>=1.0",
+    "numpy>=1.21.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0.0"]
+
+[tool.setuptools.packages.find]
+include = ["emeans_plus*"]

@@ -1,0 +1,1259 @@
+{
+ "meta": {
+  "n": 5000,
+  "d": 8,
+  "k": 50,
+  "T": 2,
+  "B": 256,
+  "alpha0": 0.4019455056900391,
+  "seeds": 10
+ },
+ "runs": [
+  {
+   "seed": 0,
+   "seed_loss": 9144.69320369386,
+   "Lloyd-25": {
+    "loss": 4606.986183571671,
+    "time": 0.010708043000022371,
+    "passes": 6,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 4606.986183571671,
+    "time": 0.009997740000017075,
+    "passes": 6,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 3515.176364496546,
+    "time": 0.06108093000000281,
+    "passes": 22,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65588.90013810503,
+    "time": 0.004842935999931797,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 4606.986183571671,
+    "time": 0.01759077199994863,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 4606.986183571671,
+    "time": 0.02932617500005108,
+    "passes": 16.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 4606.986183571671,
+    "time": 0.018317414999955872,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 4606.986183571671,
+    "time": 0.036434351000025345,
+    "passes": 21.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 10,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 4606.764149504443,
+    "time": 0.018574227999920367,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 8,
+    "swap_full_deltas": []
+   },
+   "tau + no revival + S": {
+    "loss": 4606.779098046038,
+    "time": 0.013532694999980777,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 4606.986183571671,
+    "time": 0.03947842000002311,
+    "passes": 14.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 3,
+    "swaps_accepted": 4,
+    "swaps_rejected": 1,
+    "swap_full_deltas": [
+     30952.774181804452,
+     -738.7110370865921,
+     13819.777744525622,
+     10293.824835598793
+    ]
+   }
+  },
+  {
+   "seed": 1,
+   "seed_loss": 15844.31121373859,
+   "Lloyd-25": {
+    "loss": 8666.088283873334,
+    "time": 0.019285294000042086,
+    "passes": 11,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 8666.088283873334,
+    "time": 0.0198164439999573,
+    "passes": 11,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 2643.682233376471,
+    "time": 0.09815569600004892,
+    "passes": 43,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 68025.27231117064,
+    "time": 0.004693574000043554,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 8666.088283873334,
+    "time": 0.026169772999992347,
+    "passes": 15.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 8666.088283873334,
+    "time": 0.03604935700002443,
+    "passes": 21.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 8666.088283873334,
+    "time": 0.0261052490000111,
+    "passes": 15.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 8666.088283873334,
+    "time": 0.033411853999950836,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 8666.088283873334,
+    "time": 0.04821859300000142,
+    "passes": 20.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 3,
+    "swaps_rejected": 4,
+    "swap_full_deltas": [
+     30640.739864972606,
+     19110.27138053166,
+     22716.439179774006
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 8665.633320733725,
+    "time": 0.023832101000039074,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 8666.088283873334,
+    "time": 0.05015184199999112,
+    "passes": 20.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 3,
+    "swaps_rejected": 5,
+    "swap_full_deltas": [
+     31141.616522915625,
+     16900.233205474004,
+     19213.877161305973
+    ]
+   }
+  },
+  {
+   "seed": 2,
+   "seed_loss": 5631.970991547519,
+   "Lloyd-25": {
+    "loss": 2881.924371976464,
+    "time": 0.013795946999948683,
+    "passes": 8,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 2881.924371976464,
+    "time": 0.01358628899993164,
+    "passes": 8,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 1556.838572461263,
+    "time": 0.0665439790000164,
+    "passes": 24,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65587.75597684918,
+    "time": 0.004812184000002162,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 2881.924371976464,
+    "time": 0.03715262299999722,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 2881.924371976464,
+    "time": 0.03175369600000977,
+    "passes": 18.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 2881.924371976464,
+    "time": 0.02103873900000508,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 2881.924371976464,
+    "time": 0.03542182299997876,
+    "passes": 18.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 2881.763931850095,
+    "time": 0.029219995000062227,
+    "passes": 15.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 10,
+    "swaps_accepted": 0,
+    "swaps_rejected": 6,
+    "swap_full_deltas": []
+   },
+   "tau + no revival + S": {
+    "loss": 2881.8046190084565,
+    "time": 0.01005437100002382,
+    "passes": 6.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 1,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 1556.838572461263,
+    "time": 0.01960309700007201,
+    "passes": 6.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 1,
+    "swaps_accepted": 2,
+    "swaps_rejected": 7,
+    "swap_full_deltas": [
+     1.66988199680236,
+     -708.9108687120997
+    ]
+   }
+  },
+  {
+   "seed": 3,
+   "seed_loss": 4255.508049660013,
+   "Lloyd-25": {
+    "loss": 2310.2424012783463,
+    "time": 0.0071847509999543036,
+    "passes": 4,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 2310.2424012783463,
+    "time": 0.0065316060000668585,
+    "passes": 4,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 2310.2424012783463,
+    "time": 0.06633213000009164,
+    "passes": 24,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65560.99201915434,
+    "time": 0.004775697000013679,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 2310.2424012783463,
+    "time": 0.013978609999981018,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 2310.2424012783463,
+    "time": 0.020549371000015526,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 2310.2424012783463,
+    "time": 0.013870468000050096,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 2310.2424012783463,
+    "time": 0.02366605499992147,
+    "passes": 14.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 2310.2424012783463,
+    "time": 0.022064947999979267,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 1,
+    "swaps_accepted": 1,
+    "swaps_rejected": 4,
+    "swap_full_deltas": [
+     31596.72448992841
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 2310.275220173895,
+    "time": 0.013629249000018717,
+    "passes": 8.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 3,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 2310.250890311305,
+    "time": 0.045830338999962805,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 7,
+    "swaps_accepted": 0,
+    "swaps_rejected": 7,
+    "swap_full_deltas": []
+   }
+  },
+  {
+   "seed": 4,
+   "seed_loss": 6857.353799254708,
+   "Lloyd-25": {
+    "loss": 3317.145236290967,
+    "time": 0.022700818000089384,
+    "passes": 8,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 3317.145236290967,
+    "time": 0.024621448999937456,
+    "passes": 8,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 3317.145236290967,
+    "time": 0.1328775219999443,
+    "passes": 36,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65673.28755582838,
+    "time": 0.011672538000084387,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 3317.145236290967,
+    "time": 0.04266127599998981,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 3317.145236290967,
+    "time": 0.06458122999993066,
+    "passes": 20.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 3317.145236290967,
+    "time": 0.03260407499999474,
+    "passes": 12.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 3317.145236290967,
+    "time": 0.04165439600001264,
+    "passes": 20.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 3317.145236290967,
+    "time": 0.06000492500004384,
+    "passes": 20.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 2,
+    "swaps_rejected": 4,
+    "swap_full_deltas": [
+     31556.020885114096,
+     8719.983493774238
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 3316.91184655373,
+    "time": 0.019520470999964346,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 3317.145236290967,
+    "time": 0.056948249000015494,
+    "passes": 17.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 2,
+    "swaps_rejected": 3,
+    "swap_full_deltas": [
+     31562.88597600725,
+     6615.6225756598105
+    ]
+   }
+  },
+  {
+   "seed": 5,
+   "seed_loss": 6260.4833657070685,
+   "Lloyd-25": {
+    "loss": 3317.8057314984862,
+    "time": 0.019567148999954043,
+    "passes": 6,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 3317.8057314984862,
+    "time": 0.014229392999936863,
+    "passes": 6,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 2959.542813210973,
+    "time": 0.09826266300001407,
+    "passes": 23,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65602.71709676411,
+    "time": 0.008476811000036832,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 3317.8057314984862,
+    "time": 0.02809476300001279,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 3317.8057314984862,
+    "time": 0.045440009000003556,
+    "passes": 17.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 6,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 3317.8057314984862,
+    "time": 0.027130871999929695,
+    "passes": 10.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 3317.8057314984862,
+    "time": 0.07302192899999227,
+    "passes": 27.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 16,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 3317.8057314984862,
+    "time": 0.05587162200004059,
+    "passes": 17.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 6,
+    "swaps_accepted": 1,
+    "swaps_rejected": 8,
+    "swap_full_deltas": [
+     31333.070403867405
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 3317.778526454178,
+    "time": 0.040052760999969905,
+    "passes": 15.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 10,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 3317.7773449563906,
+    "time": 0.03701571099998091,
+    "passes": 11.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 6,
+    "swaps_accepted": 0,
+    "swaps_rejected": 9,
+    "swap_full_deltas": []
+   }
+  },
+  {
+   "seed": 6,
+   "seed_loss": 11347.577513730244,
+   "Lloyd-25": {
+    "loss": 6084.800115615932,
+    "time": 0.022464380999963396,
+    "passes": 9,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 6084.800115615932,
+    "time": 0.022533536999958415,
+    "passes": 9,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 3651.6663934748426,
+    "time": 0.09439140100005261,
+    "passes": 25,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65603.88637648804,
+    "time": 0.004912552000064352,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 6084.800115615932,
+    "time": 0.02817241799994008,
+    "passes": 13.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 6084.800115615932,
+    "time": 0.03568268699996224,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 6084.800115615932,
+    "time": 0.030010165000021516,
+    "passes": 13.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 6084.800115615932,
+    "time": 0.04226296000001639,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 6084.800115615932,
+    "time": 0.049724109000067074,
+    "passes": 18.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 2,
+    "swaps_rejected": 6,
+    "swap_full_deltas": [
+     -732.0697142365589,
+     30642.45522564346
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 6085.340972841669,
+    "time": 0.02447610199999417,
+    "passes": 11.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 6,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 6084.800115615932,
+    "time": 0.06611064299988811,
+    "passes": 21.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 2,
+    "swaps_rejected": 7,
+    "swap_full_deltas": [
+     -740.1768742380027,
+     30862.985798029255
+    ]
+   }
+  },
+  {
+   "seed": 7,
+   "seed_loss": 3060.5653083201114,
+   "Lloyd-25": {
+    "loss": 1556.838572461263,
+    "time": 0.004589343000020563,
+    "passes": 2,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 1556.838572461263,
+    "time": 0.004172719999928631,
+    "passes": 2,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 1556.838572461263,
+    "time": 0.08549591500002407,
+    "passes": 22,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65678.04069889685,
+    "time": 0.00852493999991566,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 1556.838572461263,
+    "time": 0.01530679000006785,
+    "passes": 6.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 1556.838572461263,
+    "time": 0.035378719999926034,
+    "passes": 18.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 11,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 1556.838572461263,
+    "time": 0.012195821999966938,
+    "passes": 6.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 1556.838572461263,
+    "time": 0.032634525999924335,
+    "passes": 18.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 11,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 1556.838572461263,
+    "time": 0.021476641000049312,
+    "passes": 9.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 2,
+    "swaps_accepted": 1,
+    "swaps_rejected": 6,
+    "swap_full_deltas": [
+     31925.6629533855
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 1556.838572461263,
+    "time": 0.010020031999943058,
+    "passes": 6.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 1,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 1556.838572461263,
+    "time": 0.02127307299997483,
+    "passes": 9.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 2,
+    "swaps_accepted": 1,
+    "swaps_rejected": 6,
+    "swap_full_deltas": [
+     31945.597438884506
+    ]
+   }
+  },
+  {
+   "seed": 8,
+   "seed_loss": 17377.102671257944,
+   "Lloyd-25": {
+    "loss": 8429.200174564296,
+    "time": 0.015089642000020831,
+    "passes": 9,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 8429.200174564296,
+    "time": 0.015131709000002047,
+    "passes": 9,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 3637.001293004409,
+    "time": 0.0748124240000152,
+    "passes": 31,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 65589.30620691381,
+    "time": 0.004729512000039904,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 8429.200174564296,
+    "time": 0.02266772400002992,
+    "passes": 13.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 8429.200174564296,
+    "time": 0.032765124999968975,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 5,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 8429.200174564296,
+    "time": 0.02300695999997515,
+    "passes": 13.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 8429.200174564296,
+    "time": 0.046533404999991035,
+    "passes": 25.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 11,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 8429.200174564296,
+    "time": 0.04996670599996378,
+    "passes": 22.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 8,
+    "swaps_accepted": 2,
+    "swaps_rejected": 5,
+    "swap_full_deltas": [
+     31247.94211451512,
+     30924.311632949197
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 8428.969981720984,
+    "time": 0.029024897999988752,
+    "passes": 16.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 11,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 8429.200174564296,
+    "time": 0.051358040999957666,
+    "passes": 23.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 9,
+    "swaps_accepted": 2,
+    "swaps_rejected": 5,
+    "swap_full_deltas": [
+     31229.29210324911,
+     30953.613824904525
+    ]
+   }
+  },
+  {
+   "seed": 9,
+   "seed_loss": 9177.02931211824,
+   "Lloyd-25": {
+    "loss": 4496.566359004944,
+    "time": 0.01256821200001923,
+    "passes": 7,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd (to convergence)": {
+    "loss": 4496.566359004944,
+    "time": 0.012149904000011702,
+    "passes": 7,
+    "dead": 0,
+    "converged": true
+   },
+   "Lloyd-25, best of 3 seeds": {
+    "loss": 2478.427266740005,
+    "time": 0.08762531000002127,
+    "passes": 34,
+    "dead": 0
+   },
+   "e-means": {
+    "loss": 49587.92970868146,
+    "time": 0.004828524999993533,
+    "passes": 2.0,
+    "dead": 0,
+    "converged": false,
+    "fell_back": false,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + C": {
+    "loss": 4496.566359004944,
+    "time": 0.020755940999947597,
+    "passes": 11.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "e-means + S": {
+    "loss": 4496.566359004944,
+    "time": 0.03509792599993489,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + C (e-means+)": {
+    "loss": 4496.566359004944,
+    "time": 0.02068444399992586,
+    "passes": 11.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 0,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + S": {
+    "loss": 4496.566359004944,
+    "time": 0.03502991999994265,
+    "passes": 19.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 7,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "guard + S": {
+    "loss": 4496.566359004944,
+    "time": 0.03615672599994468,
+    "passes": 16.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 1,
+    "swaps_rejected": 6,
+    "swap_full_deltas": [
+     31657.055638439102
+    ]
+   },
+   "tau + no revival + S": {
+    "loss": 4379.950821743392,
+    "time": 0.02005872699999145,
+    "passes": 11.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": false,
+    "polish_iters": 6,
+    "swaps_accepted": 0,
+    "swaps_rejected": 0,
+    "swap_full_deltas": []
+   },
+   "tau + guard + S": {
+    "loss": 4496.566359004944,
+    "time": 0.03609083100002408,
+    "passes": 16.0,
+    "dead": 0,
+    "converged": true,
+    "fell_back": true,
+    "polish_iters": 4,
+    "swaps_accepted": 1,
+    "swaps_rejected": 6,
+    "swap_full_deltas": [
+     31656.41873749139
+    ]
+   }
+  }
+ ]
+}

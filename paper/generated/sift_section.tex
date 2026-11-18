@@ -1,0 +1,24 @@
+\paragraph{SIFT1M.} We trained on 1{,}000,000 SIFT descriptors ($d=128$) with $k=1024$,
+$T=2$, $B=32768$ and $\alpha_0=0.728$ from the recipe's laws, over 3 seeds,
+and evaluated IVF-Flat Recall@10 on the full base with the data set's ground truth
+(Table~\ref{tab:sift}). G was run without the per-swap audit.
+
+\begin{table}[t]
+\centering
+\small
+\caption{SIFT1M: loss relative to Lloyd-25 (mean $\pm$ s.d.\ of the per-seed ratio), Recall@10 at 1, 4
+and 16 probes, data passes, and seeds in which the seed-loss check fell back.}\label{tab:sift}
+\begin{tabular}{lrrrrrr}
+\toprule
+Variant & loss ratio & R@10, 1 & 4 & 16 & passes & fell back\\
+\midrule
+Lloyd-25 & 1.0000 {\scriptsize $\pm$0.0000} & 0.361 & 0.688 & 0.928 & 26.0 & 0 \\
+Lloyd-25, best of 3 & 0.9999 {\scriptsize $\pm$0.0002} & 0.364 & 0.692 & 0.930 & 78.0 & 0 \\
+e-means (recipe) & 0.9998 {\scriptsize $\pm$0.0001} & 0.367 & 0.691 & 0.927 & 2.0 & 0 \\
+e-means + C & 0.9998 {\scriptsize $\pm$0.0001} & 0.367 & 0.691 & 0.927 & 4.0 & 0 \\
+\textbf{e-means+} ($\tau$ + C) & 0.9998 {\scriptsize $\pm$0.0002} & 0.372 & 0.696 & 0.930 & 4.0 & 0 \\
+$\tau$ + S & 0.9959 {\scriptsize $\pm$0.0003} & 0.372 & 0.697 & 0.929 & 305.0 & 0 \\
+$\tau$ + guard + S & 0.9966 {\scriptsize $\pm$0.0003} & 0.370 & 0.700 & 0.931 & 301.0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}

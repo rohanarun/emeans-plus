@@ -1,0 +1,16 @@
+\begin{tabular}{lrrrrrrrrrrrr}
+\toprule
+Method & \multicolumn{2}{c}{Rare tail} & \multicolumn{2}{c}{Rare tail, $B{=}32$} & \multicolumn{2}{c}{Digits, $k{=}10$} & \multicolumn{2}{c}{Digits, $k{=}64$} & \multicolumn{2}{c}{Heavy-tailed ANN} & \multicolumn{2}{c}{SIFT1M} \\
+ & loss ratio & passes & loss ratio & passes & loss ratio & passes & loss ratio & passes & loss ratio & passes & loss ratio & passes \\
+\midrule
+Lloyd-25 & 1.000 {\scriptsize $\pm$0.000} & 7.0 & 1.000 {\scriptsize $\pm$0.000} & 7.0 & 1.000 {\scriptsize $\pm$0.000} & 17.6 & 1.000 {\scriptsize $\pm$0.000} & 16.1 & 1.000 {\scriptsize $\pm$0.000} & 26.0 & 1.000 {\scriptsize $\pm$0.000} & 26.0 \\
+Lloyd-25, best of 3 & 0.708 {\scriptsize $\pm$0.257} & 28.4 & 0.708 {\scriptsize $\pm$0.257} & 28.4 & 0.994 {\scriptsize $\pm$0.013} & 57.2 & 0.991 {\scriptsize $\pm$0.009} & 52.4 & 0.972 {\scriptsize $\pm$0.040} & 78.0 & 1.000 {\scriptsize $\pm$0.000} & 78.0 \\
+e-means (recipe) & 18.457 {\scriptsize $\pm$10.760} & 2.0 & 19.341 {\scriptsize $\pm$10.967} & 2.0 & 1.016 {\scriptsize $\pm$0.014} & 2.0 & 0.989 {\scriptsize $\pm$0.008} & 2.0 & 2.055 {\scriptsize $\pm$0.168} & 2.0 & 1.000 {\scriptsize $\pm$0.000} & 2.0 \\
+e-means + C & 1.000 {\scriptsize $\pm$0.000} & 11.0 & 1.000 {\scriptsize $\pm$0.000} & 11.0 & 1.016 {\scriptsize $\pm$0.014} & 4.0 & 0.989 {\scriptsize $\pm$0.008} & 4.0 & 1.171 {\scriptsize $\pm$0.382} & 78.0 & 1.000 {\scriptsize $\pm$0.000} & 4.0 \\
+\textbf{e-means+} ($\tau$ + C) & 1.000 {\scriptsize $\pm$0.000} & 11.0 & 1.000 {\scriptsize $\pm$0.000} & 11.0 & 1.008 {\scriptsize $\pm$0.011} & 4.0 & 1.003 {\scriptsize $\pm$0.010} & 4.0 & 1.000 {\scriptsize $\pm$0.000} & 97.4 & 1.000 {\scriptsize $\pm$0.000} & 4.0 \\
+e-means + S & 1.000 {\scriptsize $\pm$0.000} & 17.9 & 1.000 {\scriptsize $\pm$0.000} & 20.0 & 1.013 {\scriptsize $\pm$0.012} & 12.5 & 0.982 {\scriptsize $\pm$0.007} & 13.1 & 1.352 {\scriptsize $\pm$0.483} & 106.8 & -- & -- \\
+$\tau$ + S & 1.000 {\scriptsize $\pm$0.000} & 20.0 & 1.000 {\scriptsize $\pm$0.000} & 19.0 & 1.005 {\scriptsize $\pm$0.011} & 10.1 & 0.988 {\scriptsize $\pm$0.009} & 16.0 & 1.334 {\scriptsize $\pm$0.458} & 102.2 & 0.996 {\scriptsize $\pm$0.000} & 305.0 \\
+Guard + S & 1.000 {\scriptsize $\pm$0.000} & 15.5 & 1.000 {\scriptsize $\pm$0.000} & 17.8 & 1.014 {\scriptsize $\pm$0.010} & 13.5 & 0.994 {\scriptsize $\pm$0.007} & 13.1 & 0.866 {\scriptsize $\pm$0.062} & 76.0 & -- & -- \\
+$\tau$ + guard + S & 0.954 {\scriptsize $\pm$0.145} & 14.9 & 0.981 {\scriptsize $\pm$0.061} & 14.6 & 1.005 {\scriptsize $\pm$0.011} & 10.3 & 1.000 {\scriptsize $\pm$0.010} & 16.0 & 0.835 {\scriptsize $\pm$0.042} & 78.8 & 0.997 {\scriptsize $\pm$0.000} & 301.0 \\
+\bottomrule
+\end{tabular}

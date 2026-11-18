@@ -1,0 +1,430 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\norm}[1]{\lVert #1\rVert}
+\newcommand{\OPT}{\mathrm{OPT}}
+\input{generated/macros.tex}
+\makeatletter\newcommand{\rows}[1]{\@@input #1 }\makeatother
+
+\title{\textbf{Stabilizing Exponential Moving Average $k$-Means:\\ Repairing Two Counterexamples}}
+\author{Rohan Arun\\ Super Powers AI\\ \texttt{rohan@getsupers.com}}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+e-means (Bessa et al., 2026) replaces Lloyd iterations with exponential moving averages of
+cluster counts and sums and revives low-mass clusters. Assylbekov (2026) gave two
+counterexamples: mass-based revival can destroy a global optimum, making the ratio of expected
+losses to Lloyd unbounded under $k$-means++ seeding, and near-zero initial counts let a single
+mini-batch move a decision boundary past an unvisited point, which happens with probability
+$24/49$ in his second example. Working from the author's reference implementation, we separate
+three candidate fixes and show which one resolves which counterexample. A \emph{seed-loss check}
+(return Lloyd from the seeds whenever the e-means output is worse than the seeds) resolves the
+first counterexample and, on every input, keeps the $8(\ln k+2)$ expected approximation bound of
+$k$-means++, so the expected-loss ratio to Lloyd is bounded; it costs two data passes when it does
+not trigger. A \emph{pseudo-count floor} $\tau$ resolves the second: a one-step argument gives the
+threshold $\tau^\star=\tauStar$, and in $\ceTwoTrials$ shuffles per value the failure rate falls from
+$\ceTwoFailRecipe$ to zero between $\tau=\tauLastFail$ and $\tau=\tauFirstOk$. Neither fix alone
+resolves both. We call their combination e-means+. Off the counterexamples the picture is mixed.
+On scikit-learn's digits with $k{=}64$, $\tau=1$ raises e-means' loss by \tauCostOne{}. A
+cost-guarded revival rule we also test cuts loss to $\ratioANNGuard\times$ Lloyd's on a synthetic
+heavy-tailed set, at the pass budget of three Lloyd restarts, but costs loss on digits with $k{=}64$. On SIFT1M, e-means+ matches the loss of 25 Lloyd iterations
+($\ratioSIFTPlus\times$) in $\passSIFTPlus$ data passes instead of $\passSIFTLloyd$, and the check never triggers.
+We report these costs alongside the fixes.
+\end{abstract}
+
+\section{Introduction}
+
+e-means~\cite{bessa2026} is a mini-batch $k$-means method for large-scale vector quantization:
+each cluster keeps exponential moving averages of its count and coordinate sum, a cosine-annealed
+step size sets the averaging rate, and clusters whose averaged mass falls below a threshold are
+revived by splitting the heaviest cluster. Its authors report reaching the loss of 25 Lloyd
+iterations in about two epochs on large embedding sets~\cite{bessa2026}.
+
+Assylbekov~\cite{assylbekov2026} gave two small one-dimensional counterexamples to the published
+recipe, with a reference implementation~\cite{zh3nisrepo}.
+\textbf{Counterexample 1 (revival)}: $m$ points at 1, $m$ at 3 and one at $D=m+4$, with $k=2$.
+The singleton cluster holds $1/(2m+1)<5\%$ of the mass, revival overwrites it, and e-means ends at
+$(1,4)$ with loss $m(m+1)$ from every $k$-means++ seed pair, while Lloyd's expected loss stays below
+$6m$; the ratio of expected losses is therefore unbounded.
+\textbf{Counterexample 2 (forgetting)}: $X=(0,0,15,29,29,29,29,29)$ with seeds $(15,29)$. With
+initial counts $10^{-10}$, an early batch with a zero but without the point 15 can pull the left centre below 1, the point 15 changes sides and never returns, and e-means ends at the Lloyd
+fixed point $(0,80/3)$ with loss $490/3$ instead of $150$, with probability exactly $24/49$.
+
+Two Faiss pull requests already change the revival rule: a cost-based rule that ranks clusters by
+their removal cost~\cite{pr5915} and an opt-in separation test~\cite{pr5908}. We ask a narrower
+question: which minimal change resolves which counterexample, what does each change guarantee,
+and what does it cost on data that is not adversarial?
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item A component-level analysis on a line-for-line port of the reference code
+  (Tables~\ref{tab:ce1}--\ref{tab:ce2}): a seed-loss check resolves Counterexample~1, a
+  pseudo-count floor resolves Counterexample~2, and neither resolves the other.
+\item A one-step bound on the pseudo-count (Proposition~\ref{prop:step}) whose value for
+  Counterexample~2, $\tau^\star=\tauStar$, sits between the largest tested $\tau$ that still fails
+  ($\tauLastFail$) and the smallest that never fails ($\tauFirstOk$) in our sweep.
+\item A seed-loss check (Proposition~\ref{prop:check}) that keeps the $k$-means++ guarantee on every
+  input and so bounds the expected-loss ratio to Lloyd. The guarantee is inherited from the
+  seeding, not earned by e-means itself.
+\item Measurements on synthetic and real data that show the costs of each change. Two results are
+  negative: $\tau=1$ costs loss on digits, and on the small data sets a sample-based cost-guarded
+  revival accepts more swaps that raise the full-data loss than lower it
+  (\swapsSmallDown{} of \swapsSmallTotal{} lowered it). The same rule works well on a heavy-tailed
+  many-cluster set.
+\end{enumerate}
+\input{generated/scope.tex}
+
+\section{The e-means recipe}\label{sec:recipe}
+
+Let $X=\{x_1,\dots,x_n\}\subset\R^d$, $C=\{c_1,\dots,c_k\}$ and
+$\Phi(X,C)=\sum_{x\in X}\min_j\norm{x-c_j}^2$. e-means keeps a count $N_j$ and sum $S_j$ per
+cluster, initialised to $N_j=\tau$ and $S_j=\tau c_j^{(0)}$ with $\tau=10^{-10}$, and uses centres
+$c_j=S_j/N_j$. Over $T$ epochs of shuffled batches of size $B$, step $t$ assigns the batch to the
+nearest centres, giving per-cluster counts $n_j$ and sums $s_j$, and updates
+\begin{equation}\label{eq:ema}
+N_j\leftarrow(1-a_t)N_j+a_t n_j,\qquad S_j\leftarrow(1-a_t)S_j+a_t s_j,\qquad
+a_t=\alpha_0\bigl(0.55+0.45\cos(\pi t/M)\bigr),
+\end{equation}
+with $M$ the total number of steps. After every fifth step, each cluster with
+$N_j<(0.1/k)\sum_\ell N_\ell$ is revived: the heaviest cluster's centre $c$ and half its count
+are given to both clusters, at $c(1\mp 2^{-10})$. The output is the mean of each cluster's
+assignments during the last epoch. $B$ and $\alpha_0$ follow the printed laws
+$B=\min\bigl(n,2^{\mathrm{round}(\log_2(0.035\,k^{0.13}n^{0.88}T^{0.81}))}\bigr)$ and
+$\alpha_0=\min\bigl(1,0.824\,k^{-0.46}B^{0.90}n^{-0.45}T^{-0.11}\bigr)$. For $k=2$ these are the laws
+implemented in~\cite{zh3nisrepo}; we read the factor $2$ there as $k$.
+
+All one-dimensional results use our port of the reference code~\cite{zh3nisrepo}, which
+reproduces its assertions (losses 110, 420 and 2550 for $m=10,20,50$; the trajectory and final
+loss $490/3$ of Counterexample~2). The multi-dimensional results use a NumPy implementation of the
+same recipe, which agrees with the port on Counterexample~1 and, over $\portTrials$ shuffles of
+Counterexample~2, fails in $\portNumpy$ of runs against $\portRef$ for the port. It is not the Faiss \texttt{contrib/e\_means} code.
+
+\section{Three candidate fixes}\label{sec:fixes}
+
+\paragraph{C: seed-loss check.} Let $C_0$ be the seeds and $C_e$ the e-means output. Return $C_e$ if
+$\Phi(X,C_e)\le\Phi(X,C_0)$, and otherwise return Lloyd run from $C_0$. $\Phi(X,C_0)$ comes for free
+with $k$-means++, so the check costs one data pass when it does not trigger; we count two.
+
+\paragraph{$\tau$: pseudo-count floor.} Initialise $N_j=\tau$ with $\tau=1$ instead of $10^{-10}$.
+The seed then carries weight $\tau\prod_r(1-a_r)$ in $c_j$, which decays as data arrive.
+
+\paragraph{G: cost-guarded revival.} A cluster below the same mass threshold is only a candidate,
+and a tested candidate is not tested again for one epoch. A replacement
+$x'$ is drawn by $D^2$ sampling from a uniform reservoir $R$ of $\min(n,\max(256,16k))$ points filled during the first epoch, and
+the swap $c_j\leftarrow x'$ is accepted only if it lowers $\Phi(R,\cdot)$ by more than $10^{-3}\Phi(R,C)$.
+This is the accept-if-improves swap of local search for $k$-means~\cite{kanungo2004} and of
+LBG-U~\cite{fritzke1997}; the removal cost it uses is the quantity behind the cost-based revival
+of~\cite{pr5915}. We do not claim it as new. Our one-dimensional port evaluates the test on all of
+$X$, so there it is exact.
+
+\paragraph{S: polish.} Run Lloyd from the e-means output until the assignment stops changing, then
+apply C. We define \textbf{e-means+} as $\tau$ + C with the recipe's mass revival unchanged, and
+report S and G as options (Algorithm~\ref{alg:plus}).
+
+\begin{algorithm}[t]
+\caption{e-means+ (options in brackets)}\label{alg:plus}
+\begin{algorithmic}[1]
+\REQUIRE $X$, seeds $C_0$ from $k$-means++ with $\Phi_0=\Phi(X,C_0)$, epochs $T$, $\tau=1$
+\STATE $N_j\leftarrow\tau$, $S_j\leftarrow\tau c_{0,j}$ for all $j$
+\STATE Run the recipe of Section~\ref{sec:recipe} [with revival G instead of mass revival]
+\STATE $C\leftarrow$ last-epoch means [then $C\leftarrow$ Lloyd$(X,C)$ to convergence]
+\IF{$\Phi(X,C)>\Phi_0$}
+  \STATE $C\leftarrow$ Lloyd$(X,C_0)$ to convergence
+\ENDIF
+\RETURN $C$
+\end{algorithmic}
+\end{algorithm}
+
+\section{What each fix guarantees}
+
+\begin{proposition}[One-step boundary stability]\label{prop:step}
+Suppose $x$ is strictly nearest to $c_j$, with gap $g=\min_{\ell\ne j}(\norm{x-c_\ell}-\norm{x-c_j})>0$.
+If one update moves $c_j$ by $\delta_j$ and every other centre by at most $\varepsilon$, and
+$\delta_j+\varepsilon<g$, then $x$ is still strictly nearest to $c_j$. Without revival, the update
+\eqref{eq:ema} moves $c_j$ by
+\begin{equation}\label{eq:disp}
+\delta_j=\frac{a\,n_j}{(1-a)N_j+a\,n_j}\,\norm{\bar x_j-c_j},\qquad \bar x_j=s_j/n_j,
+\end{equation}
+so at the first step ($N_j=\tau$), if $\norm{\bar x_j-c_j}\le\rho$ and $\varepsilon<g$, the point stays
+with $c_j$ whenever
+\begin{equation}\label{eq:tau}
+\tau>n_j\,\frac{a}{1-a}\Bigl(\frac{\rho}{g-\varepsilon}-1\Bigr).
+\end{equation}
+\end{proposition}
+\begin{proof}
+By the triangle inequality, $\norm{x-c'_j}\le\norm{x-c_j}+\delta_j<\norm{x-c_\ell}-\varepsilon\le\norm{x-c'_\ell}$
+for every $\ell\ne j$. For \eqref{eq:disp}, write $S_j=N_jc_j$; then
+$c'_j-c_j=\bigl((1-a)S_j+as_j-c_j((1-a)N_j+an_j)\bigr)/N'_j=an_j(\bar x_j-c_j)/N'_j$.
+Requiring $a n_j\rho/((1-a)\tau+an_j)<g-\varepsilon$ and solving for $\tau$ gives \eqref{eq:tau}.
+\end{proof}
+
+\paragraph{Application to Counterexample~2.} With seeds $(15,29)$, the point 15 sits at the left
+centre, so $g=14$. The worst first batch is $\{0,0,29,29\}$: $n_L=2$, $\bar x_L=0$, $\rho=15$, and the
+right centre does not move ($\varepsilon=0$). With $a=\alpha_0=\ceTwoAlpha$ the bound is
+$\tau^\star=2a/(14(1-a))=\tauStar$. In one dimension the condition is also necessary: the point 15
+crosses at this step if and only if $\tau<\tau^\star$. The proposition covers the first step only.
+The reference trajectory crosses at the third batch, and we have no proof for later steps. In the sweep of Table~\ref{tab:tau}, however, all failures stop between $\tau=\tauLastFail$ and
+$\tau=\tauFirstOk$, which bracket $\tau^\star$.
+
+\begin{remark}\label{rem:notau}
+The bound grows linearly in the batch count $n_j$ and in $a/(1-a)$, so no fixed constant $\tau$
+should be expected to prevent forgetting on every input. $\tau$ is a mitigation. The worst-case
+guarantee comes from C.
+\end{remark}
+
+\begin{proposition}[Seed-loss check]\label{prop:check}
+With C, $\Phi(X,C_{\mathrm{out}})\le\Phi(X,C_0)$ on every input and in every run.
+If $C_0$ comes from $k$-means++~\cite{arthur2007}, then, since
+$\E[\Phi(X,\mathrm{Lloyd}(C_0))]\ge\OPT$,
+\[
+\E[\Phi(X,C_{\mathrm{out}})]\le 8(\ln k+2)\,\OPT
+\qquad\text{and}\qquad
+\frac{\E[\Phi(X,C_{\mathrm{out}})]}{\E[\Phi(X,\mathrm{Lloyd}(C_0))]}\le 8(\ln k+2).
+\]
+\end{proposition}
+\begin{proof}
+If $C_e$ is kept, $\Phi(X,C_e)\le\Phi(X,C_0)$ by the test. Otherwise the output is Lloyd from
+$C_0$, and Lloyd never increases $\Phi$ (a cluster that empties keeps its centre). The bounds
+follow by taking expectations.
+\end{proof}
+
+This answers the unbounded-ratio statement of~\cite{assylbekov2026} for every input. It is a
+safety net: it says nothing about when e-means beats its seeds.
+
+\begin{proposition}[Polish]\label{prop:polish}
+With S, the output is a Lloyd fixed point: each non-empty cluster's centre is the mean of the
+points nearest to it.
+\end{proposition}
+\begin{proof}
+Lloyd stops only when an assignment repeats, and its last update set each centre to the mean of
+that assignment's cells. Lloyd terminates because $\Phi$ strictly decreases whenever the
+assignment changes and there are finitely many assignments. The fallback also runs Lloyd to
+convergence. Our implementation caps runs at 300 iterations. Every capped run converged on the
+small data sets. On SIFT1M nearly all did not, so there the polished outputs are 300 Lloyd steps,
+not certified fixed points (Section~\ref{sec:bench}).
+\end{proof}
+
+\paragraph{G gives no full-data guarantee.} An accepted swap lowers the reservoir loss
+$\Phi(R,\cdot)$. It lowers $\Phi(X,\cdot)$ only when $R=X$, as in our one-dimensional runs. We
+measured the full-data effect of every accepted swap in Section~\ref{sec:bench}.
+
+\section{Results on the counterexamples}
+
+\begin{table}[t]
+\centering
+\caption{Counterexample~1 (revival). Loss from the seeds $(1,D)$ and exact expected loss under
+$k$-means++ (all seed pairs and their exact probabilities, as in~\cite{zh3nisrepo}). C: seed-loss
+check; S: polish then check; G: cost-guarded revival. Batches are the whole data set, so runs
+are deterministic.}\label{tab:ce1}
+\begin{tabular}{lrrrrrr}
+\toprule
+ & \multicolumn{2}{c}{$m=10$} & \multicolumn{2}{c}{$m=20$} & \multicolumn{2}{c}{$m=50$}\\
+Variant & seeds & $\E_{k\text{-means++}}$ & seeds & $\E_{k\text{-means++}}$ & seeds & $\E_{k\text{-means++}}$\\
+\midrule
+\rows{generated/tab_ce1.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Counterexample 1.} Table~\ref{tab:ce1}: the recipe and $\tau$ alone end at $(1,4)$ from
+every seed pair. G alone keeps the singleton, because removing it costs $(D-2)^2$ while the best
+split gains far less, and it then matches Lloyd from every seed pair. C alone also matches Lloyd:
+from $(1,D)$ the recipe's loss $m(m+1)$ exceeds the seed loss $4m$, so the check falls back. From
+$(1,3)$, Lloyd itself ends at $(1,4)$. The expected losses of every variant with C or G equal
+Lloyd's exactly, so the expected-loss ratio is 1.
+
+\begin{table}[t]
+\centering
+\caption{Counterexample~2 (forgetting) from seeds $(15,29)$, $B=4$, $T=25$. Prescribed:
+loss on the reference trajectory. Failure: loss above 150, over $\ceTwoTrials$ shuffles with
+95\% Wilson interval. Last column: expected loss under $k$-means++ (exact seed probabilities,
+$\ceTwoKppShuffles$ shuffles per seed pair). Lloyd: 150 from the seeds and $\ceTwoKppLloyd$ under
+$k$-means++.}\label{tab:ce2}
+\begin{tabular}{lrrcrr}
+\toprule
+Variant & prescribed & failure & 95\% interval & mean loss & $\E_{k\text{-means++}}$\\
+\midrule
+\rows{generated/tab_ce2.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Counterexample 2.} Table~\ref{tab:ce2}: the recipe fails in $\ceTwoFailRecipe$ of
+shuffles (95\% interval $\ceTwoFailRecipeLo$--$\ceTwoFailRecipeHi$, containing $24/49\approx48.98\%$).
+G changes nothing, because no revival happens. C and S change nothing either: $(0,80/3)$ is a Lloyd
+fixed point whose loss $490/3$ is below the seed loss 450. Every variant with $\tau=1$ never fails
+(95\% upper bound $\ceTwoZeroUpper$).
+
+\begin{table}[t]
+\centering
+\caption{Recipe with pseudo-count $\tau$ on Counterexample~2 ($\ceTwoTrials$ shuffles per value,
+same shuffles for every $\tau$). Proposition~\ref{prop:step} gives $\tau^\star=\tauStar$.}\label{tab:tau}
+\begin{tabular}{lrrr}
+\toprule
+$\tau$ & failure & 95\% upper & mean loss\\
+\midrule
+\rows{generated/tab_tau.tex}
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The $\tau$ sweep.} Table~\ref{tab:tau}: failures persist up to $\tau=\tauLastFail$ and
+vanish from $\tau=\tauFirstOk$ on, bracketing $\tau^\star=\tauStar$. There is a second, earlier drop, from
+\failAtFive{} at $\tau=0.05$ to \failAtTen{} at $\tau=0.1$. Proposition~\ref{prop:step} explains it: a first
+batch with a single zero ($n_L=1$) crosses if and only if $\tau<\tau^\star/2=\tauStarHalf$.
+Between $\tau^\star/2$ and $\tau^\star$, the only first batch that crosses is the one holding both
+zeros and not the point 15, which occurs with probability $\binom52/\binom84=1/7\approx14.29\%$. Just
+below $\tau^\star$, the failure rate is \plateauFail{} (95\% interval \plateauLo--\plateauHi), consistent
+with that route alone. At smaller $\tau$, later-batch crossings add to the rate. At
+$\tau=10^{-10}$, first-batch crossings account for $3/7\approx42.86\%$ of shuffles against
+\ceTwoFailRecipe{} observed. The exact count in~\cite{zh3nisrepo} gives $2100/4900=3/7$ for the
+first batch and $300/4900$ for the third, which sum to $24/49$. All failures stop inside the
+interval that brackets $\tau^\star$.
+
+\section{Beyond the counterexamples}\label{sec:bench}
+
+\paragraph{Setup.} \emph{Rare tail}: $n=5{,}000$, $d=8$, $k=50$; 4{,}950 points around 45 centres
+drawn uniformly in $[-5,5]^8$ ($\sigma=0.2$) and five clusters of 10 points ($0.2\%$ of the data
+each) at $20+40e_i$ ($\sigma=0.05$). The laws give $B=\BRT$, $\alpha_0=\alphaRT$. A second run fixes
+$B=32$ ($\alpha_0=\alphaRTB$). \emph{Digits}: the 1{,}797 $8\times8$ images of scikit-learn's
+digits set~\cite{sklearn} ($d=64$), with $k=10$ and $k=64$ ($B=\BDTen$). \emph{Heavy-tailed ANN}: $n=50{,}000$,
+$d=128$, 256 Gaussian modes ($\sigma=0.35$) with Zipf weights $r^{-1.15}$, the rarest 10\% of
+modes pushed outward by a factor 3.5, $k=256$, $B=\BANN$, and 1{,}000 queries (half from tail
+modes). All e-means variants use $T=2$ and the recipe's laws. Every method in a seed starts from
+the same $k$-means++ seeds; there are $\seedsRT$ seeds per set ($\seedsANN$ for ANN). We report
+the per-seed loss ratio to Lloyd-25 (mean $\pm$ standard deviation over seeds) and the number of
+full data passes, counting epochs, Lloyd iterations and loss evaluations. We do not report
+wall-clock time: our code is unoptimised NumPy on two CPU cores, unlike the GPU code
+of~\cite{bessa2026}. ``Best of 3'' runs Lloyd-25 from the shared seeds and from two more
+$k$-means++ draws.
+
+\begin{table*}[t]
+\centering
+\caption{Loss relative to Lloyd-25 from the same seeds (mean $\pm$ s.d.\ of the per-seed ratio; lower
+is better) and full data passes. C: seed-loss check; S: polish to convergence, then C; G:
+cost-guarded revival.}\label{tab:bench}
+\resizebox{\textwidth}{!}{\input{generated/tab_bench.tex}}
+\end{table*}
+
+\begin{table}[t]
+\centering
+\small
+\caption{Per-seed outcome against Lloyd-25: wins / losses (loss more than 0.1\% lower / higher) /
+times the seed-loss check fell back to Lloyd.}\label{tab:wins}
+\resizebox{\textwidth}{!}{\input{generated/tab_wins.tex}}
+\end{table}
+
+\paragraph{The check prevents the rare-tail collapse.} Mass revival destroys tail clusters. The
+$k$-means++ seeds cover all five (every tail point lies within \tailSeedMax{} of a seed), but after the
+recipe, in every seed, some tail point is at least \tailMassMin{} from every centre. The recipe's
+loss is on average $\ratioRTRecipe\times$ Lloyd's ($\ratioRTBRecipe\times$ with $B=32$); with revival
+turned off it is $\tailOffRatio\times$. The check falls back in all $\seedsRT$ seeds (Table~\ref{tab:wins}), so e-means+ equals
+Lloyd there, at $\passRTPlus$ passes instead of Lloyd's $\passRTLloyd$. This is the
+Counterexample~1 mechanism at a larger scale, and the check handles it the same way. $\tau$ + G + S ends slightly below Lloyd on average ($\ratioRTGuard$, within one standard
+deviation), and it falls back in $\fbRTGuard$ of the $\seedsRT$ seeds.
+
+\paragraph{Digits.} With $k=10$, the recipe is worse than Lloyd-25 ($\ratioDTenRecipe$) and $\tau$
+helps ($\ratioDTenPlus$), at $\passDTenPlus$ passes against Lloyd's $\passDTenLloyd$. With $k=64$,
+the recipe ends below Lloyd-25 on every seed ($\ratioDSixtyFourRecipe$; by more than 0.1\% on
+$\winsDSixtyFourRecipe$ of $\seedsRT$), but $\tau=1$ removes that advantage ($\ratioDSixtyFourPlus$). Table~\ref{tab:tausens}
+shows that the cost grows with $\tau$. Here the batch holds about one point per cluster, so the
+pseudo-count is not small next to the data. With $k=64$, G also costs loss: G + S ends at
+$\ratioDSixtyFourGuardOnly$ against $\ratioDSixtyFourRecipeS$ for the recipe + S. With $k=10$, the
+two are within noise. Turning revival off ($\tau$ + S without revival, in the results files)
+ends at \ratioDSixtyFourNoRev{} against \ratioDSixtyFourPlusS{} with $k=64$, so the recipe's mass
+revival is useful on this data.
+
+\begin{table}[t]
+\centering
+\small
+\caption{Change in final loss of the recipe + C on digits as $\tau$ varies, relative to
+$\tau=10^{-10}$ (mean over the same 10 seeds). The check never fell back.}\label{tab:tausens}
+\input{generated/tab_tausens.tex}
+\end{table}
+
+\input{ann_paragraph.tex}
+
+\IfFileExists{generated/sift_section.tex}{\input{generated/sift_section.tex}}{}
+\IfFileExists{generated/sift_section.tex}{\input{sift_paragraph.tex}}{}
+
+\paragraph{Swap audit.} On the rare-tail and digits runs with G, \swapsSmallDown{} of
+\swapsSmallTotal{} accepted swaps (\swapsSmallDownPct) lowered the full-data loss at the moment they
+were made. On the heavy-tailed set, \swapsANNDown{} of \swapsANNTotal{} did (\swapsANNDownPct).
+On the rare-tail set the reservoir holds 800 of the 5{,}000 points, so a 10-point tail cluster appears
+\reservoirRT{} times on average, and its estimated removal cost is noisy. The reservoir test is a heuristic. Where G helps,
+the help comes from many good swaps, not from a guarantee.
+
+\section{Related work}
+Mini-batch $k$-means~\cite{sculley2010} averages with step $1/\text{count}$. e-means~\cite{bessa2026}
+uses annealed exponential averages and revival. Fritzke's LBG-U~\cite{fritzke1997} moves the
+centre with the lowest utility (removal cost) and keeps the move only if the error drops after
+re-running $k$-means. Single-swap local search with the same acceptance rule is a constant-factor
+approximation~\cite{kanungo2004}. Faiss PR~\#5915~\cite{pr5915} makes a utility-based revival the
+default in e-means. PR~\#5908~\cite{pr5908} adds an opt-in separation test. The seed-loss check
+relies only on Lloyd's monotonicity and the $k$-means++ bound~\cite{arthur2007}.
+
+\section{Limitations}
+\input{generated/limit_data.tex} (ii) The multi-dimensional results come from a NumPy re-implementation of the recipe.
+(iii) Proposition~\ref{prop:step} covers one step. The full sweep result in Table~\ref{tab:tau} is
+empirical (95\% upper bound $\ceTwoZeroUpper$ per $\tau$). (iv) $\tau=1$ was fixed before the
+real-data runs. Table~\ref{tab:tausens} suggests a smaller floor, or one scaled to the expected
+per-cluster batch count, but we have not tested such a rule. (v) The data sets are small and the
+seed counts modest, so differences within one standard deviation should not be read as wins.
+
+\section{Conclusion}
+The two counterexamples have separate causes and separate fixes. A two-pass seed-loss check
+resolves the revival counterexample and bounds the expected-loss ratio to Lloyd on every input.
+A pseudo-count floor above a computable one-step threshold resolves the forgetting
+counterexample. Off the counterexamples, the floor can cost loss, and a sample-based
+accept-if-improves revival depends on the data: it helps on a heavy-tailed many-cluster set and
+hurts on digits. The check costs at most one Lloyd run from the seeds, the run e-means was meant
+to replace, and nothing beyond two passes when it does not trigger. It is the one change we
+recommend in every setting we tested.
+
+\paragraph{Reproducibility.} Code, results and the scripts that generate every table and number in
+this paper: \texttt{emeans-plus} (\texttt{benchmarks/run\_experiments.py},
+\texttt{benchmarks/make\_tables.py}, \texttt{tests/}).
+
+\begin{thebibliography}{10}
+\bibitem{arthur2007} D.~Arthur and S.~Vassilvitskii. $k$-means++: the advantages of careful seeding.
+  In \emph{Proc.\ SODA}, pages 1027--1035, 2007.
+\bibitem{assylbekov2026} Z.~Assylbekov. Two counterexamples for e-means. arXiv:2611.22065, 2026.
+\bibitem{bessa2026} S.~Bessa, P.-E.~Mazar\'e, G.~Szilvasy, H.~Touvron, D.~Picard, M.~Douze, and H.~J\'egou.
+  e-means: outperforming $k$-means (in one-tenth the epochs). arXiv:2611.09501, 2026.
+\bibitem{fritzke1997} B.~Fritzke. The LBG-U method for vector quantization -- an improvement over LBG
+  inspired from neural networks. \emph{Neural Processing Letters}, 5(1):35--45, 1997.
+\bibitem{kanungo2004} T.~Kanungo, D.~M.~Mount, N.~S.~Netanyahu, C.~D.~Piatko, R.~Silverman, and A.~Y.~Wu.
+  A local search approximation algorithm for $k$-means clustering. \emph{Computational Geometry},
+  28(2--3):89--112, 2004.
+\bibitem{sklearn} F.~Pedregosa et al. Scikit-learn: machine learning in Python.
+  \emph{Journal of Machine Learning Research}, 12:2825--2830, 2011.
+\bibitem{pr5908} rzr1331. e-means: opt-in revival=``auto''/``separation'' that keeps real small
+  clusters (NumpyEmeans). \url{https://github.com/facebookresearch/faiss/pull/5908}, 2026.
+\bibitem{pr5915} lcabannes. e-means: cost-based cluster revival.
+  \url{https://github.com/facebookresearch/faiss/pull/5915}, 2026.
+\bibitem{sculley2010} D.~Sculley. Web-scale $k$-means clustering. In \emph{Proc.\ WWW}, pages 1177--1178, 2010.
+\bibitem{zh3nisrepo} Z.~Assylbekov. Reference code for ``Two counterexamples for e-means''.
+  \url{https://github.com/zh3nis/e-means-counterexamples}, 2026.
+\end{thebibliography}
+\end{document}
