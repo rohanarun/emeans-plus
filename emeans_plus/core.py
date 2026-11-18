@@ -136,7 +136,8 @@ def _guarded_revival(X_ref, x_ref_norm, C, N, S, cooldown_until, step, cooldown_
         in_j = c1 == j
         cost = float(np.sum(d2[in_j] - d1[in_j]))
         new = X_ref[int(rng.choice(len(X_ref), p=d1 / phi))]
-        nd = x_ref_norm[:, 0] + float(new @ new) - 2.0 * (X_ref @ new)
+        with np.errstate(divide="ignore", over="ignore", invalid="ignore"):
+            nd = x_ref_norm[:, 0] + float(new @ new) - 2.0 * (X_ref @ new)
         np.maximum(nd, 0.0, out=nd)
         base = np.where(in_j, d2, d1)
         gain = float(np.sum(np.maximum(0.0, base - nd)))
